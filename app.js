@@ -21,9 +21,17 @@ app.use("/", allRoutes);
 const authRoutes = require("./routes/auth.routes");
 app.use("/", authRoutes);
 
-
 const userRoutes = require("./routes/user.routes");
 app.use("/", userRoutes);
+
+const episodeRoutes = require("./routes/episode.routes");
+app.use("/", episodeRoutes);
+
+const journeyRoutes = require("./routes/journey.routes");
+app.use("/", journeyRoutes);
+
+const notesRoutes = require("./routes/note.routes");
+app.use("/", notesRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
