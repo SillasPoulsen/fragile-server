@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 const { isAuthenticated, isAdmin } = require("./../middleware/jwt.middleware");
+const Journey = require("../models/journey.model");
 
 const saltRounds = 10;
 
@@ -29,18 +30,18 @@ router.post("/auth/signup", async (req, res, next) => {
     }
 
     // Use regex to validate the password format
-    const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-    if (!passwordRegex.test(password)) {
-      res.status(400).json({
-        message:
-          "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
-      });
-      return;
-    }
+    // const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+    // if (!passwordRegex.test(password)) {
+    // res.status(400).json({
+    // message:
+    // "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
+    // });
+    // return;
+    // }
 
     // Check if email is not taken
     const foundUser = await User.findOne({ email });
-
+    console.log("4");
     if (foundUser) {
       res.status(400).json({ message: "Provide a valid email" });
       return;
@@ -55,6 +56,7 @@ router.post("/auth/signup", async (req, res, next) => {
       email,
       password: hashedPassword,
       name,
+      subscriptions: "61b352e7fba0cb2d01ef9aa7",
     });
 
     // We should never expose passwords publicly
@@ -101,7 +103,7 @@ router.post("/auth/login", async (req, res, next) => {
         email: foundUser.email,
         name: foundUser.name,
         role: foundUser.role, // 'admin' or 'user'
-        image: foundUser.image, 
+        image: foundUser.image,
       };
 
       // Create a JWT with the payload

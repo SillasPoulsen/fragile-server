@@ -6,12 +6,13 @@ const Notes = require("../models/note.model");
 const { isAuthenticated, isAdmin } = require("../middleware/jwt.middleware");
 const Episodes = require("../models/episode.model");
 
-// Post notes /journey/:id and the Episode Id
-router.post("/note/:id", isAuthenticated, async (req, res, next) => {
+// Post notes
+router.post("/note", isAuthenticated, async (req, res, next) => {
   try {
-    const { textInput, scaleInput, public } = req.body;
+    console.log(req.body);
+    const { textInput, public, episode } = req.body;
     const currentUser = req.payload;
-    const currentEpisodeId = req.params.id;
+    //const currentEpisodeId = req.params.id;
 
     if (!textInput && !scaleInput) {
       res.status(400).json({ message: "You have to provide an input" });
@@ -20,7 +21,7 @@ router.post("/note/:id", isAuthenticated, async (req, res, next) => {
 
     const createdNote = await Notes.create({
       creator: currentUser,
-      episode: currentEpisodeId,
+      episode: episodeId,
       textInput: textInput,
       scaleInput: scaleInput,
       public: public,
@@ -32,9 +33,13 @@ router.post("/note/:id", isAuthenticated, async (req, res, next) => {
       { $push: { hasFinished: currentUser._id } }
     );
 
+    await User.findByIdAndUpdate(currentUser, {
+      $push: { hasDone: currentEpisodeId },
+    });
+
     res.status(200).json(createdNote);
 
-    currentJourney.findByIdAndUpdate(currentJourney, {});
+    //currentJourney.findByIdAndUpdate(currentJourney, {});
   } catch (error) {
     console.log("noteErorr", error);
     next(error);

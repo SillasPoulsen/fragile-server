@@ -7,6 +7,7 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   image: { type: String, default: "https://i.imgur.com/yWHfhiG.png" },
   subscriptions: [{ type: Schema.Types.ObjectId, ref: "Journey" }],
+  hasDone: [{ type: Schema.Types.ObjectId, ref: "Episode" }],
 });
 
 module.exports = model("User", userSchema);

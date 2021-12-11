@@ -23,12 +23,13 @@ router.get(
   isAuthenticated,
   async (req, res, next) => {
     try {
+      console.log(req.payload);
       const currentUserId = req.payload._id;
 
       const userObj = await User.findById(currentUserId).populate(
         "subscriptions"
       );
-      const userSubscriptions = userObj.subcriptions;
+      const userSubscriptions = userObj.subscriptions;
 
       res.status(200).json(userSubscriptions);
     } catch (error) {
