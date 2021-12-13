@@ -19,6 +19,19 @@ router.get("/episode/:id", isAuthenticated, async (req, res, next) => {
   }
 });
 
+// Get the current Episode
+router.get("/episode/:id/notes", isAuthenticated, async (req, res, next) => {
+  try {
+    const currentEpisodeId = req.params.id;
+
+    const currentEpisode = await Episodes.findById(currentEpisodeId).populate("notes");
+
+    res.status(200).json(currentEpisode);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/episode", isAuthenticated, async (req, res, next) => {
   try {
     const allEpisodes = await Episodes.find();
