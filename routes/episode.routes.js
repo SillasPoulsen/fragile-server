@@ -11,9 +11,20 @@ router.get("/episode/:id", isAuthenticated, async (req, res, next) => {
   try {
     const currentEpisodeId = req.params.id;
 
-    const currentEpisode = await Episodes.findById(currentEpisodeId);
+    const currentEpisode = await Episodes.findById(currentEpisodeId).populate(
+      "notes"
+    );
+    const allNotesFromThisOneEpisode = currentEpisode.notes;
+    console.log("allNotesFromThisOneEpisode :>> ", allNotesFromThisOneEpisode);
+    const myUserNote = allNotesFromThisOneEpisode.filter(
+      (note) => note.creator.toString() === req.payload._id
+    );
 
-    res.status(200).json(currentEpisode);
+    const firstUserNote = myUserNote[0];
+
+    console.log("this is the firstUserNote", firstUserNote);
+
+    res.status(200).json({ currentEpisode, firstUserNote });
   } catch (error) {
     next(error);
   }
@@ -24,7 +35,9 @@ router.get("/episode/:id/notes", isAuthenticated, async (req, res, next) => {
   try {
     const currentEpisodeId = req.params.id;
 
-    const currentEpisode = await Episodes.findById(currentEpisodeId).populate("notes");
+    const currentEpisode = await Episodes.findById(currentEpisodeId).populate(
+      "notes"
+    );
 
     res.status(200).json(currentEpisode);
   } catch (error) {
