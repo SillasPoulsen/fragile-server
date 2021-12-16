@@ -37,13 +37,43 @@ router.get("/journey/:id", isAuthenticated, async (req, res, next) => {
 router.post("/journey/:id", isAuthenticated, async (req, res, next) => {
   try {
     const currentUserId = req.payload._id;
-    const journeyId = req.params;
+    const journeyId = req.body.id;
 
-    const userObj = await User.findByIdAndUpdate(currentUserId, {
-      $push: { subscriptions: journeyId },
+    const journeyFound = await Journey.findOne({
+      _id: journeyId,
+      belongsTo: currentUserId,
     });
 
-    res.status(200).json(userObj);
+    const userFound = await User.findOne({
+      _id: currentUserId,
+      subscriptions: journeyId,
+    });
+
+    if (journeyFound && userFound) {
+      await User.findByIdAndUpdate(currentUserId, {
+        $pull: { subscriptions: journeyId },
+      });
+      await Journey.findByIdAndUpdate(journeyId, {
+        $pull: { belongsTo: currentUserId },
+      });
+
+      const updatedJourney = await Journey.findById(journeyId).populate(
+        "episodes"
+      );
+      res.status(200).json(updatedJourney);
+    } else if (!journeyFound && !userFound) {
+      await User.findByIdAndUpdate(currentUserId, {
+        $push: { subscriptions: journeyId },
+      });
+      await Journey.findByIdAndUpdate(journeyId, {
+        $push: { belongsTo: currentUserId },
+      });
+
+      const updatedJourney = await await Journey.findById(journeyId).populate(
+        "episodes"
+      );
+      res.status(200).json(updatedJourney);
+    }
   } catch (error) {
     next(error);
   }
