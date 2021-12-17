@@ -32,7 +32,7 @@ router.post("/note", isAuthenticated, async (req, res, next) => {
       res.status(400).json({ message: "You have to provide an input" });
       return;
     }
-    console.log("2");
+
     const createdNote = await Notes.create({
       creator: currentUser,
       episode: episode,
@@ -40,12 +40,11 @@ router.post("/note", isAuthenticated, async (req, res, next) => {
       //scaleInput: scaleInput,
       public: public,
     });
-    console.log("3");
+
     const updatedEpisode = await Episode.findByIdAndUpdate(episode, {
       $push: { notes: createdNote._id },
     });
 
-    console.log("4");
     const userObj = await User.findByIdAndUpdate(
       currentUser,
       {
@@ -54,9 +53,7 @@ router.post("/note", isAuthenticated, async (req, res, next) => {
       { new: true }
     );
 
-    console.log("5", currentUser);
-
-    res.status(200).json(createdNote);
+    res.status(200).json({ createdNote, userObj });
   } catch (error) {
     console.log("noteErorr", error);
     next(error);

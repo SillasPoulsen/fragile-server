@@ -18,6 +18,7 @@ router.get("/api/users/current", isAuthenticated, async (req, res, next) => {
   }
 });
 
+// Get users subsciptions
 router.get(
   "/api/users/subscriptions",
   isAuthenticated,
@@ -38,26 +39,36 @@ router.get(
   }
 );
 
-//To get alle the info about the user for the profile page. 
-router.get(
-  "/api/users/allinfo",
-  isAuthenticated,
-  async (req, res, next) => {
-    try {
-      console.log(req.payload);
-      const currentUserId = req.payload._id;
+router.get("/api/users/hasDone", isAuthenticated, async (req, res, next) => {
+  try {
+    console.log(req.payload);
+    const currentUserId = req.payload._id;
 
-      const userObj = await User.findById(currentUserId).populate(
-        "subscriptions"
-      ).populate("hasDone")
-    
+    const userObj = await User.findById(currentUserId);
 
-      res.status(200).json(userObj);
-    } catch (error) {
-      next(error);
-    }
+    const userSubscriptions = userObj.hasDone;
+
+    res.status(200).json(userSubscriptions);
+  } catch (error) {
+    next(error);
   }
-);
+});
+
+//To get alle the info about the user for the profile page.
+router.get("/api/users/allinfo", isAuthenticated, async (req, res, next) => {
+  try {
+    console.log(req.payload);
+    const currentUserId = req.payload._id;
+
+    const userObj = await User.findById(currentUserId)
+      .populate("subscriptions")
+      .populate("hasDone");
+
+    res.status(200).json(userObj);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // PUT /api/users/current  - Update the current user
 router.put("/api/users/current", isAuthenticated, async (req, res, next) => {
