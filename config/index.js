@@ -18,7 +18,7 @@ const cors = require("cors");
 const REACT_APP =
   process.env.ORIGIN ||
   "http://localhost:3000" ||
-  "https://inspiring-shirley-2099b2.netlify.app";
+  "https://inspiring-shirley-2099b2.netlify.app/";
 
 // Middleware configuration
 module.exports = (app) => {
