@@ -15,7 +15,10 @@ const cookieParser = require("cookie-parser");
 // unless the request if from the same domain, by default express wont accept POST requests
 const cors = require("cors");
 
-const REACT_APP = process.env.ORIGIN || "http://localhost:3000";
+const REACT_APP =
+  process.env.ORIGIN ||
+  "http://localhost:3000" ||
+  "https://inspiring-shirley-2099b2.netlify.app";
 
 // Middleware configuration
 module.exports = (app) => {

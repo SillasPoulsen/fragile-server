@@ -41,7 +41,7 @@ router.post("/auth/signup", async (req, res, next) => {
 
     // Check if email is not taken
     const foundUser = await User.findOne({ email });
-    console.log("4");
+
     if (foundUser) {
       res.status(400).json({ message: "Provide a valid email" });
       return;
