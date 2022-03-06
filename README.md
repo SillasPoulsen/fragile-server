@@ -1,9 +1,3 @@
-# fragile-server
-
-# fragile-client
-# M3 - `README.md` Example
-
-
 
 # Fragile 
 
